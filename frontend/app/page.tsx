@@ -1,3 +1,7 @@
+'use client';
+
+// AgriIntel AI Landing Page
+
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/features/landing-redesign/HeroSection';
 import { RealitySection } from '@/components/features/landing-redesign/RealitySection';
@@ -6,23 +10,23 @@ import { IntelligenceEngineSection } from '@/components/features/landing-redesig
 import { DeepFeatureReveal } from '@/components/features/landing-redesign/DeepFeatureReveal';
 import { FarmerTestimonial } from '@/components/features/landing-redesign/FarmerTestimonial';
 import { FinalCTA } from '@/components/features/landing-redesign/FinalCTA';
+import { Footer } from '../components/Footer';
 
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-[#0F1115] selection:bg-agri-gold/30 text-white">
-      <Navbar />
-      <HeroSection />
-      <RealitySection />
-      <TurningPointSection />
-      <IntelligenceEngineSection />
-      <DeepFeatureReveal />
-      <FarmerTestimonial />
-      <FinalCTA />
+export default function LandingPage() {
+    return (
+        <main className="bg-[#050505] min-h-screen text-white selection:bg-agri-green/30 overflow-x-hidden">
+            <Navbar />
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-white/10 text-center text-gray-500 text-sm bg-[#0F1115]">
-        <p>© 2026 AgriIntel AI. Built for the future of farming.</p>
-      </footer>
-    </main>
-  );
+            <div className="relative z-10">
+                <HeroSection />
+                <RealitySection />
+                <TurningPointSection />
+                <IntelligenceEngineSection />
+                <DeepFeatureReveal />
+                <FarmerTestimonial />
+                <FinalCTA />
+                <Footer />
+            </div>
+        </main>
+    );
 }

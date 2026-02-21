@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 
-export function HarvestRingGauge({ risk = 62 }: { risk?: number }) {
+export function HarvestRingGauge({ risk = 62, spoilageClass = "Analyzing..." }: { risk?: number, spoilageClass?: string }) {
     const radius = 80;
     // Half circle circumference
     const circumference = Math.PI * radius;
@@ -13,7 +13,7 @@ export function HarvestRingGauge({ risk = 62 }: { risk?: number }) {
     const offset = circumference - (risk / 100) * circumference;
 
     return (
-        <Card className="h-full flex flex-col p-6 bg-[#0E1210] border-white/5">
+        <Card className="h-full flex flex-col p-6 bg-[#0E1210] border-white/5 relative z-10 transition-opacity duration-500">
             <h3 className="text-lg font-bold text-white mb-6">Spoilage Risk Analysis</h3>
 
             <div className="flex-1 flex flex-col items-center justify-center relative min-h-[180px]">
@@ -47,16 +47,20 @@ export function HarvestRingGauge({ risk = 62 }: { risk?: number }) {
                     </defs>
                 </svg>
 
-                <div className="absolute bottom-0 flex flex-col items-center translate-y-2">
-                    <span className="text-4xl font-bold text-white">{risk}%</span>
-                    <span className="text-xs text-gray-400">AI Risk</span>
+                <div className="absolute bottom-4 flex flex-col items-center translate-y-2 px-2 text-center">
+                    <span className={`text-xl font-bold ${spoilageClass === 'Severe spoilage' ? 'text-red-500' :
+                            spoilageClass === 'Moderate spoilage' ? 'text-yellow-400' :
+                                spoilageClass === 'No spoilage' ? 'text-emerald-500' : 'text-gray-400'
+                        }`}>
+                        {spoilageClass}
+                    </span>
                 </div>
             </div>
 
             <div className="space-y-4 mt-6 w-full">
-                <RiskBar label="Time Risk" value={45} color="bg-yellow-400" />
-                <RiskBar label="Temperature" value={70} color="bg-red-500" />
-                <RiskBar label="Humidity" value={55} color="bg-teal-400" />
+                <RiskBar label="Time Risk" value={risk > 0 ? Math.min(risk + 10, 100) : 0} color="bg-yellow-400" />
+                <RiskBar label="Temperature Input" value={risk > 0 ? Math.min(risk * 1.2, 100) : 0} color="bg-red-500" />
+                <RiskBar label="Humidity Input" value={risk > 0 ? Math.max(risk - 10, 0) : 0} color="bg-teal-400" />
             </div>
         </Card>
     );

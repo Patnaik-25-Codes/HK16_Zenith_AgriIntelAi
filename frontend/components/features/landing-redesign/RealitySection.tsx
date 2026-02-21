@@ -1,28 +1,50 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-
-const decayData = [
-    { day: 1, value: 100 },
-    { day: 2, value: 98 },
-    { day: 3, value: 92 },
-    { day: 4, value: 85 },
-    { day: 5, value: 75 },
-    { day: 6, value: 60 },
-    { day: 7, value: 40 },
-];
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 
 export function RealitySection() {
+    const containerRef = useRef(null);
+    const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        if (isInView) {
+            let start = 0;
+            const end = 1200;
+            const duration = 2000;
+            const startTime = performance.now();
+
+            const animate = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Ease out quart
+                const ease = 1 - Math.pow(1 - progress, 4);
+
+                setCount(Math.floor(start + (end - start) * ease));
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+    }, [isInView]);
+
     return (
-        <section className="min-h-screen bg-[#0F1115] relative py-24 flex items-center">
-            <div className="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+        <section ref={containerRef} className="min-h-screen bg-[#0F1115] relative py-24 flex items-center overflow-hidden">
+            {/* Ambient Background */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/10 blur-[120px] rounded-full pointer-events-none" />
+
+            <div className="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center relative z-10">
 
                 {/* Left Content */}
                 <div>
                     <motion.h2
                         className="text-4xl md:text-6xl font-bold font-display mb-8 leading-tight"
-                        initial={{ opacity: 0, y: 50 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
@@ -31,7 +53,7 @@ export function RealitySection() {
                     </motion.h2>
                     <motion.p
                         className="text-xl text-gray-400 font-light leading-relaxed"
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
@@ -40,52 +62,68 @@ export function RealitySection() {
                     </motion.p>
                 </div>
 
-                {/* Right Chart */}
-                <motion.div
-                    className="h-[400px] w-full bg-white/5 rounded-3xl border border-white/10 p-8 relative overflow-hidden"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-900/10 to-transparent pointer-events-none" />
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={decayData}>
-                            <defs>
-                                <linearGradient id="decayGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <XAxis dataKey="day" stroke="#666" hide />
-                            <YAxis hide domain={[0, 100]} />
-                            <Area
-                                type="monotone"
-                                dataKey="value"
-                                stroke="#ef4444"
-                                strokeWidth={3}
-                                fill="url(#decayGradient)"
-                                strokeDasharray="2000"
-                                strokeDashoffset="2000"
-                            >
-                                <animate
-                                    attributeName="stroke-dashoffset"
-                                    from="2000"
-                                    to="0"
-                                    dur="3s"
-                                    fill="freeze"
-                                    calcMode="spline"
-                                    keySplines="0.4 0 0.2 1"
-                                />
-                            </Area>
-                        </AreaChart>
-                    </ResponsiveContainer>
+                {/* Right Chart - Custom SVG Animation */}
+                <div className="relative h-[400px] w-full bg-white/5 rounded-3xl border border-white/10 p-8 overflow-hidden group hover:border-red-500/20 transition-colors duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent pointer-events-none" />
 
+                    {/* SVG Chart */}
+                    <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="decayGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#ef4444" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#ef4444" stopOpacity="0" />
+                            </linearGradient>
+                        </defs>
+
+                        {/* Area Fill */}
+                        <motion.path
+                            d="M0,20 C50,25 100,40 150,60 C200,80 250,110 300,140 C350,170 400,190 400,200 L400,200 L0,200 Z"
+                            fill="url(#decayGradient)"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.5, delay: 0.5 }}
+                        />
+
+                        {/* Stroke Line */}
+                        <motion.path
+                            d="M0,20 C50,25 100,40 150,60 C200,80 250,110 300,140 C350,170 400,190 400,200"
+                            fill="none"
+                            stroke="#ef4444"
+                            strokeWidth="4"
+                            initial={{ pathLength: 0 }}
+                            whileInView={{ pathLength: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 2, ease: "easeInOut" }}
+                        />
+
+                        {/* Pulsing End Point */}
+                        <motion.circle
+                            cx="400"
+                            cy="200"
+                            r="6"
+                            fill="#ef4444"
+                            initial={{ scale: 0, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 2, duration: 0.5 }}
+                        >
+                            <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
+                        </motion.circle>
+                    </svg>
+
+                    {/* Stats Overlay */}
                     <div className="absolute top-8 left-8">
-                        <p className="text-red-400 text-sm uppercase tracking-widest font-bold">Value Decay</p>
-                        <p className="text-3xl font-bold text-white">₹ 1,200 <span className="text-base font-normal text-gray-500">/quintal lost</span></p>
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                            <p className="text-red-400 text-sm uppercase tracking-widest font-bold">Value Decay</p>
+                        </div>
+                        <p className="text-4xl font-bold text-white tabular-nums">
+                            ₹ {count.toLocaleString()}
+                            <span className="text-lg font-normal text-gray-500 ml-2">/quintal lost</span>
+                        </p>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

@@ -19,11 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(
-        inter.variable,
-        outfit.variable,
-        "font-sans bg-[#050505] text-white min-h-screen selection:bg-agri-green/30"
-      )}>
+      <body
+        suppressHydrationWarning
+        className={cn(
+          inter.variable,
+          outfit.variable,
+          "font-sans bg-[#050505] text-white min-h-screen selection:bg-agri-green/30"
+        )}>
         <LanguageProvider>
           {children}
         </LanguageProvider>

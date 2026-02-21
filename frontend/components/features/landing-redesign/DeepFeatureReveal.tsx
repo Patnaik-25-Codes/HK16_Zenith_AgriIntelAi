@@ -9,19 +9,19 @@ const features = [
         title: "Spoilage Risk Prediction",
         desc: "Know exactly how many days your crop has left before quality degrades. Our XGBoost model analyzes temperature, humidity, and time to give you a precise risk score.",
         gradient: "from-amber-500/20 to-transparent",
-        image: "/assets/images/spoilage-ui.svg"
+        image: "/assets/images/ui-preview-Spoilage-Risk-Prediction.png"
     },
     {
         title: "3-Day Price Forecast",
         desc: "Stop selling at a loss. See where the market is heading with 92% accuracy, powered by historical data from your local mandi.",
         gradient: "from-emerald-500/20 to-transparent",
-        image: "/assets/images/forecast-ui.svg"
+        image: "/assets/images/ui-preview-3-Day-Price-Forecast.png"
     },
     {
         title: "Sustainability Optimizer",
         desc: "Protect your soil for the next generation. Get AI-driven crop rotation plans that regenerate nitrogen and maintain soil health.",
         gradient: "from-blue-500/20 to-transparent",
-        image: "/assets/images/soil-ui.svg"
+        image: "/assets/images/ui-preview-Sustainability-Optimizer.png"
     }
 ];
 
